@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avraam | Visual Designer</title>
+    <link rel="icon" type="image/svg+xml" href="assets/thumbs/avraam%20logo.svg">
     <style>
         :root {
             --bg: #080706;
@@ -1319,58 +1320,17 @@
             content: none;
         }
 
-        .brand-mark {
-            position: relative;
-            display: grid;
-            place-items: center;
+        .brand-logo {
             width: 100%;
-            aspect-ratio: 1;
-            border: 1px solid rgba(184, 18, 36, 0.82);
-            border-radius: 50%;
-            color: var(--hot);
-            font-family: var(--mono);
-            text-align: center;
-            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease;
+            height: 100%;
+            object-fit: contain;
+            background: transparent;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.25s ease;
         }
 
-        .brand-mark::before,
-        .brand-mark::after {
-            content: "";
-            position: absolute;
-            inset: 5px;
-            border: 1px solid rgba(184, 18, 36, 0.38);
-            border-radius: inherit;
-        }
-
-        .brand-mark::after {
-            inset: 50% 7px auto;
-            border-width: 1px 0 0;
-            border-radius: 0;
-        }
-
-        .brand-mark span,
-        .brand-mark small {
-            position: absolute;
-            z-index: 1;
-            font-size: 0.25rem;
-            line-height: 1;
-        }
-
-        .brand-mark span { top: 10px; }
-        .brand-mark small { bottom: 9px; }
-
-        .brand-mark strong {
-            position: relative;
-            z-index: 1;
-            font-family: var(--script);
-            font-size: 2.35rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .brand:hover .brand-mark {
-            transform: rotate(-7deg) scale(1.06);
-            border-color: #d0182d;
+        .brand:hover .brand-logo {
+            transform: scale(1.07);
+            filter: brightness(1.18);
         }
 
         .nav,
@@ -1462,7 +1422,7 @@
             position: relative;
             z-index: 2;
             align-self: center;
-            width: min(64rem, 62%);
+            width: min(58rem, 58%);
             padding: 56px 0 74px;
         }
 
@@ -1480,9 +1440,9 @@
             margin: 0;
             color: #b81224;
             font-family: var(--blackletter);
-            font-size: 12.5rem;
+            font-size: clamp(8rem, 10vw, 10.75rem);
             font-weight: 400;
-            line-height: 0.66;
+            line-height: 0.78;
             text-indent: 0;
             text-transform: none;
             text-shadow: 0 12px 40px rgba(0,0,0,0.56);
@@ -1499,7 +1459,7 @@
 
         .hero-copy {
             max-width: 42rem;
-            margin: 38px 0 0;
+            margin: 82px 0 0;
             color: var(--fg);
             font-family: var(--display);
             font-size: 2rem;
@@ -1546,44 +1506,16 @@
             z-index: 2;
             display: grid;
             place-items: center;
-            width: 132px;
+            width: 148px;
             aspect-ratio: 1;
-            border: 1px solid rgba(184, 18, 36, 0.72);
-            border-radius: 50%;
-            color: var(--hot);
-            font-family: var(--mono);
-            text-align: center;
             animation: sealFloat 8s ease-in-out infinite alternate;
         }
 
-        .hero-seal::before,
-        .hero-seal::after {
-            content: "";
-            position: absolute;
-            inset: 9px;
-            border: 1px solid rgba(184, 18, 36, 0.34);
-            border-radius: inherit;
-        }
-
-        .hero-seal::after {
-            inset: 50% 15px auto;
-            border-width: 1px 0 0;
-            border-radius: 0;
-        }
-
-        .hero-seal span,
-        .hero-seal small {
-            position: absolute;
-            font-size: 0.48rem;
-        }
-
-        .hero-seal span { top: 24px; }
-        .hero-seal small { bottom: 22px; }
-
-        .hero-seal strong {
-            font-family: var(--script);
-            font-size: 4.8rem;
-            font-weight: 700;
+        .hero-seal-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent;
         }
 
         .hero-bottom {
@@ -1691,8 +1623,47 @@
         .poster-grid {
             display: grid;
             grid-template-columns: repeat(12, minmax(0, 1fr));
-            gap: 110px 28px;
+            gap: 76px 28px;
             padding-bottom: 56px;
+        }
+
+        .posters-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-width: 150px;
+            min-height: 48px;
+            margin: 0 auto 36px;
+            padding: 0 24px;
+            border: 1px solid var(--line);
+            border-radius: 0;
+            background: transparent;
+            color: var(--fg);
+            font-family: var(--condensed);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .posters-toggle::after {
+            content: "+";
+            color: var(--hot);
+            font-family: var(--mono);
+        }
+
+        .posters-toggle[aria-expanded="true"]::after {
+            content: "-";
+        }
+
+        .posters-toggle:hover {
+            border-color: var(--hot);
+            background: rgba(178, 15, 34, 0.08);
+        }
+
+        .posters-toggle[hidden] {
+            display: none;
         }
 
         .work-card,
@@ -1708,6 +1679,8 @@
         .work-card:nth-child(3) { grid-column: 1 / span 4; }
         .work-card:nth-child(4) { grid-column: 5 / span 4; margin-top: 96px; }
         .work-card:nth-child(5) { grid-column: 9 / span 4; }
+        .work-card:nth-child(n+6) { grid-column: span 4; }
+        .work-card:nth-child(n) { grid-column: span 4; margin-top: 0; }
 
         .work-card::after {
             width: 48px;
@@ -1777,16 +1750,23 @@
         }
 
         .card-info {
+            grid-template-columns: minmax(0, 1fr) auto;
             padding-top: 16px;
         }
 
         .card-title {
             font-family: var(--display);
-            font-size: 2.15rem;
+            min-width: 0;
+            font-size: clamp(1.15rem, 1.45vw, 1.65rem);
             font-style: italic;
             font-weight: 400;
-            line-height: 1;
+            line-height: 1.12;
             text-transform: none;
+            overflow-wrap: anywhere;
+        }
+
+        .card-info .card-meta {
+            white-space: nowrap;
         }
 
         .contact-section {
@@ -1904,7 +1884,7 @@
 
         @keyframes titleCutReveal {
             from { opacity: 0; clip-path: inset(0 100% 0 0); }
-            to { opacity: 1; clip-path: inset(0); }
+            to { opacity: 1; clip-path: inset(-28% -8% -38% -8%); }
         }
 
         @keyframes copyReveal {
@@ -1918,8 +1898,8 @@
         }
 
         @media (max-width: 1200px) {
-            .hero-title { font-size: 9.5rem; }
-            .hero-main { width: 68%; }
+            .hero-title { font-size: 8.5rem; }
+            .hero-main { width: 64%; }
             .section-title { font-size: 6.5rem; }
             .contact-section .section-title { font-size: 7rem; }
         }
@@ -1947,9 +1927,6 @@
             }
 
             .brand { width: 46px; height: 46px; }
-            .brand-mark strong { font-size: 2rem; }
-            .brand-mark span { top: 8px; }
-            .brand-mark small { bottom: 7px; }
             .nav { display: none; }
             .contact-link { grid-column: auto; align-self: center; }
 
@@ -1994,13 +1971,14 @@
             .hero-kicker { margin-bottom: 14px; }
 
             .hero-title {
-                font-size: 5.9rem;
+                font-size: 5.25rem;
+                line-height: 0.8;
                 white-space: nowrap;
             }
 
             .hero-copy {
                 max-width: 21rem;
-                margin-top: 28px;
+                margin-top: 56px;
                 font-size: 1.5rem;
             }
 
@@ -2053,7 +2031,7 @@
                 margin-top: 0;
             }
 
-            .card-title { font-size: 2rem; }
+            .card-title { font-size: 1.65rem; }
 
             .contact-section .section-title {
                 font-size: 5rem;
@@ -2086,6 +2064,138 @@
             .contact-value { font-size: 0.92rem; }
         }
 
+        .collaborations-section {
+            padding-bottom: 84px;
+        }
+
+        .logo-marquee {
+            margin-top: 58px;
+            overflow: hidden;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .logo-marquee-track {
+            display: flex;
+            width: max-content;
+            will-change: transform;
+            animation: projectLogoLoop 42s linear infinite;
+            animation-play-state: paused;
+        }
+
+        .logo-marquee.is-running .logo-marquee-track {
+            animation-play-state: running;
+        }
+
+        .logo-marquee.is-running:hover .logo-marquee-track {
+            animation-play-state: paused;
+        }
+
+        .logo-wall {
+            display: flex;
+            flex: 0 0 auto;
+            width: max-content;
+        }
+
+        .project-logo {
+            display: grid;
+            place-items: center;
+            flex: 0 0 clamp(180px, 15vw, 260px);
+            min-width: 0;
+            aspect-ratio: 3 / 2;
+            padding: clamp(18px, 2.4vw, 38px);
+            border-right: 1px solid var(--line);
+            overflow: hidden;
+        }
+
+        .project-logo img {
+            --logo-scale: 1;
+            --logo-y: -20px;
+            width: auto;
+            height: auto;
+            max-width: 82%;
+            max-height: 60%;
+            object-fit: contain;
+            object-position: center;
+            background: transparent;
+            transform: translateY(var(--logo-y)) scale(var(--logo-scale));
+            transform-origin: center;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-logo:hover img {
+            opacity: 0.82;
+        }
+
+        .project-logo:nth-child(1) img { --logo-scale: 0.88; }
+        .project-logo:nth-child(2) img { --logo-scale: 1.55; }
+        .project-logo:nth-child(3) img { --logo-y: -11px; }
+        .project-logo:nth-child(4) img { --logo-scale: 0.92; --logo-y: -2%; }
+        .project-logo:nth-child(5) img { --logo-y: -10px; }
+        .project-logo:nth-child(6) img { --logo-scale: 0.9; --logo-y: -2px; }
+        .project-logo:nth-child(7) img { --logo-scale: 0.95; --logo-y: -4px; }
+        .project-logo:nth-child(8) img { --logo-scale: 0.95; --logo-y: -2px; }
+        .project-logo:nth-child(9) img { --logo-y: -6px; }
+        .project-logo:nth-child(10) img { --logo-scale: 0.88; --logo-y: -28px; }
+        .project-logo:nth-child(11) img { --logo-scale: 0.92; --logo-y: -3%; }
+        .project-logo:nth-child(12) img { --logo-scale: 1.35; --logo-y: -27px; }
+        .project-logo:nth-child(13) img { --logo-scale: 0.92; --logo-y: -1%; }
+        .project-logo:nth-child(14) img { --logo-scale: 1.35; --logo-y: -25px; }
+        .project-logo:nth-child(15) img { --logo-scale: 0.9; --logo-y: -5px; }
+        .project-logo:nth-child(16) img { --logo-y: -9px; }
+        .project-logo:nth-child(17) img { --logo-scale: 0.86; }
+        .project-logo:nth-child(18) img { --logo-scale: 0.86; --logo-y: -30px; }
+        .project-logo:nth-child(19) img { --logo-scale: 1.08; --logo-y: -5px; }
+
+        @keyframes projectLogoLoop {
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(-50%, 0, 0); }
+        }
+
+        .site-footer {
+            position: relative;
+            z-index: 4;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 28px;
+            padding: 28px 30px 34px;
+            border-top: 1px solid var(--line);
+            color: rgba(238, 234, 225, 0.48);
+            font-family: var(--mono);
+            font-size: 0.6rem;
+            line-height: 1.55;
+            text-transform: uppercase;
+        }
+
+        .site-footer p {
+            max-width: 760px;
+            margin: 0;
+        }
+
+        .footer-mark {
+            color: var(--hot);
+            font-family: var(--blackletter);
+            font-size: 1.55rem;
+            line-height: 1;
+            text-transform: none;
+        }
+
+        @media (max-width: 980px) {
+            .project-logo { flex-basis: 210px; }
+        }
+
+        @media (max-width: 620px) {
+            .collaborations-section { padding-inline: 18px; }
+            .logo-marquee { margin-top: 38px; }
+            .project-logo { padding: 18px; }
+            .site-footer {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 24px 18px 28px;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .page-intro { display: none; }
 
@@ -2098,6 +2208,14 @@
             .hero-scroll span,
             .hero-seal,
             .type-ribbon-track {
+                animation: none !important;
+            }
+
+            .logo-marquee {
+                overflow-x: auto;
+            }
+
+            .logo-marquee-track {
                 animation: none !important;
             }
 
@@ -2122,14 +2240,11 @@
 
     <header class="site-header">
         <a class="brand" href="#overview" aria-label="Avraam home">
-            <span class="brand-mark" aria-hidden="true">
-                <span>MMXXVI</span>
-                <strong>A</strong>
-                <small>VISUAL CULTURE</small>
-            </span>
+            <img class="brand-logo" src="assets/thumbs/avraam logo.svg" alt="" aria-hidden="true">
         </a>
         <nav class="nav" aria-label="Primary">
             <a href="#posters">Work</a>
+            <a href="#collaborations">Projects</a>
         </nav>
         <a class="contact-link" href="#contact">Brief me</a>
     </header>
@@ -2153,9 +2268,7 @@
                 </a>
             </div>
             <div class="hero-seal" aria-hidden="true">
-                <span>MMXXVI</span>
-                <strong>A</strong>
-                <small>VISUAL CULTURE</small>
+                <img class="hero-seal-logo" src="assets/thumbs/avraam logo.svg" alt="">
             </div>
             <div class="hero-bottom">
                 <div class="hero-services" aria-label="Services">
@@ -2183,7 +2296,7 @@
                 <span id="poster-count" class="count">05 posters</span>
             </div>
 
-            <div class="poster-grid">
+            <div id="poster-grid" class="poster-grid">
                 <article class="work-card">
                     <button type="button" class="poster-button">
                         <div class="media media-poster">
@@ -2243,6 +2356,139 @@
                         </div>
                     </button>
                 </article>
+
+                <article class="work-card" data-poster-id="new-assasins-creed">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster">
+                            <img src="assets/thumbs/new-poster-thumbs/assasins-creed.jpg" data-full="assets/posters/new-posters/assasins-creed.jpg" alt="Assasin's Creed poster" loading="lazy" decoding="async">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">Assasin's Creed</h3>
+                            <span class="card-meta">Poster / 06</span>
+                        </div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-beomguys-panic">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster">
+                            <img src="assets/thumbs/new-poster-thumbs/beomguys-panic.jpg" data-full="assets/posters/new-posters/beomguys-panic.jpg" alt="Beomguy's Panic poster" loading="lazy" decoding="async">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">Beomguy's Panic</h3>
+                            <span class="card-meta">Poster / 07</span>
+                        </div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-berserk">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster">
+                            <img src="assets/thumbs/new-poster-thumbs/berserk.jpg" data-full="assets/posters/new-posters/berserk.jpg" alt="Berserk poster" loading="lazy" decoding="async">
+                        </div>
+                        <div class="card-info"><h3 class="card-title">Berserk</h3><span class="card-meta">Poster / 08</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-dexter">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/dexter.jpg" data-full="assets/posters/new-posters/dexter.jpg" alt="Dexter poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">Dexter</h3><span class="card-meta">Poster / 09</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-drive">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/drive.jpg" data-full="assets/posters/new-posters/drive.jpg" alt="Drive poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">Drive</h3><span class="card-meta">Poster / 10</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-i-am-music">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/i-am-music.jpg" data-full="assets/posters/new-posters/i-am-music.jpg" alt="I AM MUSIC poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">I AM MUSIC</h3><span class="card-meta">Poster / 11</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-last-colony">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/last-colony.jpg" data-full="assets/posters/new-posters/last-colony.jpg" alt="Last Colony poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">Last Colony</h3><span class="card-meta">Poster / 12</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-struct">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/struct.jpg" data-full="assets/posters/new-posters/struct.jpg" alt="Struct poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">Struct</h3><span class="card-meta">Poster / 13</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-substance">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/substance.jpg" data-full="assets/posters/new-posters/substance.jpg" alt="Substance poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">Substance</h3><span class="card-meta">Poster / 14</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-txt">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/txt.jpg" data-full="assets/posters/new-posters/txt.jpg" alt="TXT poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">TXT</h3><span class="card-meta">Poster / 15</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-void-reality-jimin">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/void-reality-jimin.jpg" data-full="assets/posters/new-posters/void-reality-jimin.jpg" alt="Void Reality [ Jimin ] poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">Void Reality [ Jimin ]</h3><span class="card-meta">Poster / 16</span></div>
+                    </button>
+                </article>
+
+                <article class="work-card" data-poster-id="new-wisp">
+                    <button type="button" class="poster-button">
+                        <div class="media media-poster"><img src="assets/thumbs/new-poster-thumbs/wisp.jpg" data-full="assets/posters/new-posters/wisp.jpg" alt="Wisp poster" loading="lazy" decoding="async"></div>
+                        <div class="card-info"><h3 class="card-title">Wisp</h3><span class="card-meta">Poster / 17</span></div>
+                    </button>
+                </article>
+            </div>
+            <button id="posters-toggle" class="posters-toggle" type="button" aria-controls="poster-grid" aria-expanded="false">More...</button>
+        </section>
+
+        <section id="collaborations" class="section collaborations-section" aria-labelledby="collaborations-title">
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">Selected collaborations</p>
+                    <h2 id="collaborations-title" class="section-title">Projects</h2>
+                    <p class="section-note">Identities and visual systems created with brands, studios, and independent projects.</p>
+                </div>
+                <span class="count">19 marks</span>
+            </div>
+            <div class="logo-marquee">
+                <div class="logo-marquee-track">
+                    <div class="logo-wall" aria-label="Project logos">
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/%2B.png" alt="Collaborating project logo 01" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/76.png" alt="Collaborating project logo 02" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/al-zargar_last_version.png" alt="Al Zargar logo" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/alpha%20brokers@10000x.png" alt="Alpha Brokers logo" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/azmol%20logo@10000x-8.png" alt="Azmol logo" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/Group%205.png" alt="Collaborating project logo 06" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/id6225IRxG_logos.png" alt="Collaborating project logo 07" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/IMG_7908.PNG" alt="Collaborating project logo 08" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/juba%20logo%20(2).png" alt="Juba logo" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/jurabek%20babaev.png" alt="Jurabek Babaev logo" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/logo%20(3).png" alt="Collaborating project logo 11" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/Mask%20group%20(2).png" alt="Collaborating project logo 12" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/oxu@10000x.png" alt="Oxu logo" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/parus-logo.png" alt="Parus logo" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/tobb%20etu@10000x.png" alt="Tobb Etu logo" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/Traced%20Image%20(1).png" alt="Collaborating project logo 16" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/Untitled-1.png" alt="Collaborating project logo 17" loading="lazy" decoding="async"></div>
+                <div class="project-logo"><img src="assets/thumbs/project%20logos/white.png" alt="Collaborating project logo 18" loading="lazy" decoding="async"></div>
+                        <div class="project-logo"><img src="assets/thumbs/project%20logos/%D0%BB%D0%BE%D0%B3%D0%BE%201.png" alt="Collaborating project logo 19" loading="lazy" decoding="async"></div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -2312,6 +2558,11 @@
         </section>
 
     </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Avraam. All artwork and visual content are protected. Unauthorized use, reproduction, or distribution is prohibited.</p>
+        <span class="footer-mark" aria-hidden="true">Avraam</span>
+    </footer>
 
     <div id="image-lightbox" class="lightbox" aria-hidden="true">
         <div class="lightbox-panel" role="dialog" aria-modal="true" aria-label="Poster preview">
@@ -2389,6 +2640,7 @@
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const posterGrid = document.querySelector('.poster-grid');
         const posterCount = document.getElementById('poster-count');
+        const postersToggle = document.getElementById('posters-toggle');
         const adminToggle = document.getElementById('admin-toggle');
         const adminPanel = document.getElementById('admin-panel');
         const adminClose = document.getElementById('admin-close');
@@ -2405,8 +2657,13 @@
         const posterImport = document.getElementById('poster-import');
         const posterRestore = document.getElementById('poster-restore');
         const adminPosterList = document.getElementById('admin-poster-list');
+        const logoMarquee = document.querySelector('.logo-marquee');
+        const logoMarqueeTrack = document.querySelector('.logo-marquee-track');
+        const projectLogoWall = logoMarqueeTrack?.querySelector('.logo-wall');
         const legacyPosterStorageKey = 'avraam-custom-posters-v1';
         const posterLibraryKey = 'avraam-poster-library-v2';
+        const posterDefaultsVersionKey = 'avraam-poster-defaults-version';
+        const posterDefaultsVersion = '2026-07-new-posters';
         const adminVisibleKey = 'avraam-admin-visible';
         let posterButtons = Array.from(document.querySelectorAll('.poster-button'));
         const defaultPosters = readDefaultPosters();
@@ -2414,6 +2671,29 @@
         let editingPosterId = '';
         let draggedPosterId = '';
         let activePosterIndex = 0;
+        let postersExpanded = false;
+        const posterPreviewCount = 6;
+
+        if (logoMarqueeTrack && projectLogoWall) {
+            const duplicateLogoWall = projectLogoWall.cloneNode(true);
+            duplicateLogoWall.removeAttribute('aria-label');
+            duplicateLogoWall.setAttribute('aria-hidden', 'true');
+            duplicateLogoWall.querySelectorAll('img').forEach((image) => {
+                image.alt = '';
+            });
+            logoMarqueeTrack.appendChild(duplicateLogoWall);
+
+            if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+                const logoMarqueeObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        logoMarquee.classList.toggle('is-running', entry.isIntersecting);
+                    });
+                }, { threshold: 0.08 });
+                logoMarqueeObserver.observe(logoMarquee);
+            } else if (!prefersReducedMotion) {
+                logoMarquee.classList.add('is-running');
+            }
+        }
 
         const ambientCanvas = document.getElementById('ambient-canvas');
         const ambientCtx = ambientCanvas?.getContext('2d', { alpha: true });
@@ -2456,14 +2736,25 @@
             try {
                 const saved = JSON.parse(localStorage.getItem(posterLibraryKey) || 'null');
                 if (Array.isArray(saved)) {
-                    return saved.map(sanitizePoster).filter((poster) => poster.src);
+                    const savedPosters = saved.map(sanitizePoster).filter((poster) => poster.src);
+                    if (localStorage.getItem(posterDefaultsVersionKey) !== posterDefaultsVersion) {
+                        const savedIds = new Set(savedPosters.map((poster) => poster.id));
+                        const newDefaults = defaultPosters.filter((poster) => !savedIds.has(poster.id));
+                        const migratedPosters = [...savedPosters, ...newDefaults];
+                        localStorage.setItem(posterLibraryKey, JSON.stringify(migratedPosters));
+                        localStorage.setItem(posterDefaultsVersionKey, posterDefaultsVersion);
+                        return migratedPosters;
+                    }
+                    return savedPosters;
                 }
 
                 const legacy = JSON.parse(localStorage.getItem(legacyPosterStorageKey) || '[]');
                 const legacyPosters = Array.isArray(legacy)
                     ? legacy.map(sanitizePoster).filter((poster) => poster.src)
                     : [];
-                return [...defaultPosters.map((poster) => ({ ...poster })), ...legacyPosters];
+                const initialPosters = [...defaultPosters.map((poster) => ({ ...poster })), ...legacyPosters];
+                localStorage.setItem(posterDefaultsVersionKey, posterDefaultsVersion);
+                return initialPosters;
             } catch (error) {
                 return defaultPosters.map((poster) => ({ ...poster }));
             }
@@ -2480,9 +2771,22 @@
         }
 
         function refreshPosterButtons() {
-            posterButtons = Array.from(document.querySelectorAll('.poster-button'));
+            const allPosterButtons = Array.from(document.querySelectorAll('.poster-button'));
+            posterButtons = allPosterButtons.filter((button) => !button.closest('.work-card')?.hidden);
             if (posterCount) {
-                posterCount.textContent = `${String(posterButtons.length).padStart(2, '0')} posters`;
+                posterCount.textContent = `${String(allPosterButtons.length).padStart(2, '0')} posters`;
+            }
+        }
+
+        function updatePosterPreview() {
+            const cards = Array.from(posterGrid?.querySelectorAll('.work-card') || []);
+            cards.forEach((card, index) => {
+                card.hidden = !postersExpanded && index >= posterPreviewCount;
+            });
+            if (postersToggle) {
+                postersToggle.hidden = cards.length <= posterPreviewCount;
+                postersToggle.setAttribute('aria-expanded', String(postersExpanded));
+                postersToggle.textContent = postersExpanded ? 'Show less' : 'More...';
             }
         }
 
@@ -2504,7 +2808,7 @@
             image.alt = `${poster.title} poster`;
             image.loading = 'lazy';
             image.decoding = 'async';
-            if (poster.full && poster.full !== poster.src && !poster.src.startsWith('data:')) {
+            if (poster.full && poster.full !== poster.src && !poster.src.startsWith('data:') && !poster.src.includes('/new-poster-thumbs/')) {
                 image.srcset = `${poster.src} 520w, ${poster.full} 1080w`;
                 image.sizes = '(max-width: 760px) calc(100vw - 36px), 42vw';
             }
@@ -2598,6 +2902,7 @@
         function renderPosterLibrary() {
             if (!posterGrid) return;
             posterGrid.replaceChildren(...posterLibrary.map(createPosterCard));
+            updatePosterPreview();
             refreshPosterButtons();
             renderAdminList();
             bindPosterMotion();
@@ -2848,6 +3153,13 @@
             }
         });
 
+        const heroTitle = document.querySelector('.hero-title');
+        heroTitle?.addEventListener('animationend', (event) => {
+            if (event.animationName === 'titleCutReveal') {
+                heroTitle.style.clipPath = 'none';
+            }
+        });
+
         const revealItems = document.querySelectorAll('.section-head, .work-card, .contact-card');
         revealItems.forEach((item, index) => {
             item.classList.add('reveal');
@@ -2892,6 +3204,20 @@
             refreshPosterButtons();
             const index = posterButtons.indexOf(button);
             if (index >= 0) openPoster(index);
+        });
+
+        postersToggle?.addEventListener('click', () => {
+            postersExpanded = !postersExpanded;
+            updatePosterPreview();
+            refreshPosterButtons();
+            if (!postersExpanded) {
+                requestAnimationFrame(() => {
+                    document.getElementById('posters')?.scrollIntoView({
+                        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                        block: 'start'
+                    });
+                });
+            }
         });
 
         adminToggle?.addEventListener('click', toggleAdminPanel);

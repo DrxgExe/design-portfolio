@@ -632,6 +632,12 @@
             border-bottom: 1px solid var(--line);
         }
 
+        .admin-head-actions {
+            display: flex;
+            flex: 0 0 auto;
+            gap: 8px;
+        }
+
         .admin-title {
             margin: 0;
             font-size: clamp(2rem, 5vw, 4rem);
@@ -662,12 +668,29 @@
         }
 
         .admin-form,
+        .admin-login,
         .admin-tools,
         .admin-list-wrap {
             display: grid;
             gap: 12px;
             padding: 18px 0;
             border-bottom: 1px solid var(--line);
+        }
+
+        .admin-login {
+            align-content: start;
+            min-height: 48vh;
+            padding-top: 28px;
+        }
+
+        .admin-content {
+            display: block;
+        }
+
+        .admin-login[hidden],
+        .admin-content[hidden],
+        .admin-lock[hidden] {
+            display: none;
         }
 
         .admin-field {
@@ -697,6 +720,19 @@
 
         .admin-field input:focus {
             border-color: rgba(185, 154, 98, 0.82);
+        }
+
+        .admin-error {
+            min-height: 18px;
+            margin: 0;
+            color: var(--hot);
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+        }
+
+        .admin-error[hidden] {
+            display: none;
         }
 
         .admin-actions {
@@ -2581,12 +2617,25 @@
     <aside id="admin-panel" class="admin-panel" aria-hidden="true" aria-labelledby="admin-title">
         <div class="admin-head">
             <div>
-                <p class="eyebrow">[ Local admin ]</p>
+                <p id="admin-status" class="eyebrow">[ Password required ]</p>
                 <h2 id="admin-title" class="admin-title">Posters</h2>
             </div>
-            <button id="admin-close" class="admin-close" type="button" aria-label="Close admin panel">X</button>
+            <div class="admin-head-actions">
+                <button id="admin-lock" class="admin-secondary admin-lock" type="button" hidden>Lock</button>
+                <button id="admin-close" class="admin-close" type="button" aria-label="Close admin panel">X</button>
+            </div>
         </div>
 
+        <form id="admin-login" class="admin-login" autocomplete="off">
+            <div class="admin-field">
+                <label for="admin-password-input">Password</label>
+                <input id="admin-password-input" name="adminPassword" type="password" autocomplete="current-password" placeholder="Enter password" required>
+            </div>
+            <button class="admin-primary" type="submit">Enter admin</button>
+            <p id="admin-login-error" class="admin-error" role="alert" hidden>Wrong password.</p>
+        </form>
+
+        <div id="admin-content" class="admin-content" hidden>
         <form id="poster-form" class="admin-form">
             <input id="poster-id-input" name="posterId" type="hidden">
             <div class="admin-form-head">
@@ -2628,6 +2677,7 @@
             <p class="admin-small">All posters / drag to reorder</p>
             <div id="admin-poster-list" class="admin-poster-list"></div>
         </div>
+        </div>
     </aside>
 
     <script>
@@ -2644,6 +2694,12 @@
         const adminToggle = document.getElementById('admin-toggle');
         const adminPanel = document.getElementById('admin-panel');
         const adminClose = document.getElementById('admin-close');
+        const adminLogin = document.getElementById('admin-login');
+        const adminPasswordInput = document.getElementById('admin-password-input');
+        const adminLoginError = document.getElementById('admin-login-error');
+        const adminContent = document.getElementById('admin-content');
+        const adminLock = document.getElementById('admin-lock');
+        const adminStatus = document.getElementById('admin-status');
         const posterForm = document.getElementById('poster-form');
         const posterIdInput = document.getElementById('poster-id-input');
         const posterFormMode = document.getElementById('admin-form-mode');
@@ -2665,6 +2721,9 @@
         const posterDefaultsVersionKey = 'avraam-poster-defaults-version';
         const posterDefaultsVersion = '2026-07-new-posters';
         const adminVisibleKey = 'avraam-admin-visible';
+        const adminSessionKey = 'avraam-admin-unlocked';
+        const adminPasswordHash = '4adadb9e572d6f1d698fb954a6d6817ef74d03e5157e2ac2469b7b51d80713a8';
+        const adminPasswordFallbackHash = '01914834';
         let posterButtons = Array.from(document.querySelectorAll('.poster-button'));
         const defaultPosters = readDefaultPosters();
         let posterLibrary = loadPosterLibrary();
@@ -3045,14 +3104,87 @@
             });
         }
 
+        function getAdminFallbackHash(value) {
+            let hash = 0x811c9dc5;
+            for (const character of value) {
+                hash ^= character.charCodeAt(0);
+                hash = Math.imul(hash, 0x01000193) >>> 0;
+            }
+            return hash.toString(16).padStart(8, '0');
+        }
+
+        async function checkAdminPassword(value) {
+            const password = String(value || '').trim();
+            if (!password) return false;
+
+            try {
+                if (window.crypto?.subtle && window.TextEncoder) {
+                    const bytes = new TextEncoder().encode(password);
+                    const buffer = await window.crypto.subtle.digest('SHA-256', bytes);
+                    const hash = Array.from(new Uint8Array(buffer))
+                        .map((byte) => byte.toString(16).padStart(2, '0'))
+                        .join('');
+                    return hash === adminPasswordHash;
+                }
+            } catch (error) {}
+
+            return getAdminFallbackHash(password) === adminPasswordFallbackHash;
+        }
+
+        function isAdminUnlocked() {
+            try {
+                return sessionStorage.getItem(adminSessionKey) === '1';
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function setAdminUnlocked(isUnlocked) {
+            try {
+                if (isUnlocked) {
+                    sessionStorage.setItem(adminSessionKey, '1');
+                } else {
+                    sessionStorage.removeItem(adminSessionKey);
+                }
+            } catch (error) {}
+
+            if (adminLogin) adminLogin.hidden = isUnlocked;
+            if (adminContent) adminContent.hidden = !isUnlocked;
+            if (adminLock) adminLock.hidden = !isUnlocked;
+            if (adminStatus) {
+                adminStatus.textContent = isUnlocked ? '[ Admin unlocked ]' : '[ Password required ]';
+            }
+            if (adminLoginError) adminLoginError.hidden = true;
+            if (!isUnlocked && adminPasswordInput) adminPasswordInput.value = '';
+        }
+
+        function focusAdminPanel() {
+            requestAnimationFrame(() => {
+                if (isAdminUnlocked()) {
+                    posterTitleInput?.focus();
+                } else {
+                    adminPasswordInput?.focus();
+                }
+            });
+        }
+
+        function requireAdminUnlock() {
+            if (isAdminUnlocked()) return true;
+            setAdminUnlocked(false);
+            openAdminPanel();
+            return false;
+        }
+
         function openAdminPanel() {
             adminToggle?.classList.add('is-visible');
+            setAdminUnlocked(isAdminUnlocked());
             adminPanel?.classList.add('is-open');
             adminPanel?.setAttribute('aria-hidden', 'false');
             adminToggle?.setAttribute('aria-expanded', 'true');
             try {
                 localStorage.setItem(adminVisibleKey, '1');
             } catch (error) {}
+            focusAdminPanel();
         }
 
         function closeAdminPanel() {
@@ -3222,6 +3354,38 @@
 
         adminToggle?.addEventListener('click', toggleAdminPanel);
         adminClose?.addEventListener('click', closeAdminPanel);
+        adminLogin?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const submitButton = adminLogin.querySelector('button[type="submit"]');
+            if (submitButton) submitButton.disabled = true;
+            if (adminLoginError) adminLoginError.hidden = true;
+
+            const isCorrectPassword = await checkAdminPassword(adminPasswordInput?.value);
+            if (isCorrectPassword) {
+                setAdminUnlocked(true);
+                focusAdminPanel();
+            } else {
+                if (adminLoginError) {
+                    adminLoginError.textContent = 'Wrong password.';
+                    adminLoginError.hidden = false;
+                }
+                adminPasswordInput?.select();
+            }
+
+            if (submitButton) submitButton.disabled = false;
+        });
+
+        adminPasswordInput?.addEventListener('input', () => {
+            if (adminLoginError) adminLoginError.hidden = true;
+        });
+
+        adminLock?.addEventListener('click', () => {
+            resetPosterForm();
+            setAdminUnlocked(false);
+            focusAdminPanel();
+        });
+
+        setAdminUnlocked(isAdminUnlocked());
 
         if (location.hash === '#admin') {
             openAdminPanel();
@@ -3239,6 +3403,7 @@
 
         posterForm?.addEventListener('submit', async (event) => {
             event.preventDefault();
+            if (!requireAdminUnlock()) return;
             const submitButton = posterSubmit || posterForm.querySelector('button[type="submit"]');
             submitButton.disabled = true;
 
@@ -3279,11 +3444,15 @@
             }
         });
 
-        posterCancelEdit?.addEventListener('click', resetPosterForm);
+        posterCancelEdit?.addEventListener('click', () => {
+            if (!requireAdminUnlock()) return;
+            resetPosterForm();
+        });
 
         adminPosterList?.addEventListener('click', (event) => {
             const actionButton = event.target.closest?.('[data-admin-action]');
             if (!actionButton) return;
+            if (!requireAdminUnlock()) return;
             const posterId = actionButton.dataset.posterId;
             const action = actionButton.dataset.adminAction;
 
@@ -3300,6 +3469,10 @@
         });
 
         adminPosterList?.addEventListener('dragstart', (event) => {
+            if (!requireAdminUnlock()) {
+                event.preventDefault();
+                return;
+            }
             const row = event.target.closest?.('.admin-poster-row');
             if (!row) return;
             draggedPosterId = row.dataset.posterId || '';
@@ -3309,6 +3482,7 @@
         });
 
         adminPosterList?.addEventListener('dragover', (event) => {
+            if (!isAdminUnlocked()) return;
             const row = event.target.closest?.('.admin-poster-row');
             if (!row || row.dataset.posterId === draggedPosterId) return;
             event.preventDefault();
@@ -3318,6 +3492,10 @@
         });
 
         adminPosterList?.addEventListener('drop', (event) => {
+            if (!requireAdminUnlock()) {
+                event.preventDefault();
+                return;
+            }
             const targetRow = event.target.closest?.('.admin-poster-row');
             const sourceId = draggedPosterId || event.dataTransfer.getData('text/plain');
             const targetId = targetRow?.dataset.posterId;
@@ -3345,6 +3523,7 @@
         });
 
         posterExport?.addEventListener('click', () => {
+            if (!requireAdminUnlock()) return;
             const json = JSON.stringify(posterLibrary, null, 2);
             const blob = new Blob([json], { type: 'application/json' });
             const link = document.createElement('a');
@@ -3355,6 +3534,10 @@
         });
 
         posterImport?.addEventListener('change', () => {
+            if (!requireAdminUnlock()) {
+                posterImport.value = '';
+                return;
+            }
             const file = posterImport.files?.[0];
             if (!file) return;
             const reader = new FileReader();
@@ -3381,6 +3564,7 @@
         });
 
         posterRestore?.addEventListener('click', () => {
+            if (!requireAdminUnlock()) return;
             if (!confirm('Restore the original poster list and order?')) return;
             if (commitPosterLibrary(defaultPosters.map((poster) => ({ ...poster })))) {
                 resetPosterForm();
